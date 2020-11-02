@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+</head>
+<link type="text/css" rel="stylesheet" href="/css/basicCss.css">
+<body>
+    <table border="1">
+        <tr class="title">
+            <td colspan="5">帖子列表
+                <span id="checkBack"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">贴子标题：<input type="text" name="title"><button id="search">搜索</button></td>
+        </tr>
+        <tr id="manager">
+            <td>标题</td>
+            <td>内容摘要</td>
+            <td>作者</td>
+            <td>发布时间</td>
+            <td>操作</td>
+        </tr>
+    </table>
+    <div id="pageJump">
+        <span id="info">第<span id="pageNo">1</span>/<span id="pageCount"></span>页</span>
+        <span id="jump"><a id="firstP" name="ju">首 页</a> <a id="preP" name="ju">上一页</a>
+            <a id="nextP" name="ju">下一页</a> <a id="lastP" name="ju">末页</a></span>
+        <input type="hidden" name="pageSize" value="4">
+    </div>
+</body>
+<script src="js/jquery-1.8.3.js"></script>
+<script>
+    function bindData(data){
+        $("tr:gt(2)").remove();
+        $.ajax({
+            url:"getinvitations",
+            data:data,
+            dataType:"json",
+            success:function(pageInfo){
+                var pageinfoList = pageInfo.list;
+                $("#pageCount").text(pageInfo.pages);
+                $("#pageNo").text(pageInfo.pageNum);
+                for(let i=0;i<pageinfoList.length;i++){
+                    var tr = $("<tr></tr>");
+                    var title = $("<td>"+pageinfoList[i].title+"</td>");
+                    var summary = $("<td>"+pageinfoList[i].summary+"</td>");
+                    var author = $("<td>"+pageinfoList[i].author+"</td>");
+                    var createdate = $("<td>"+pageinfoList[i].createdate+"</td>");
+                    var id = $("<td class=goLook id="+pageinfoList[i].id+">查看回复</td>");
+                    tr.append(title).append(summary).append(author).append(createdate).append(id);
+                    $("table").append(tr);
+                }
+            }
+        })
+    }
+    $(function(){
+        var pageNo = $("#pageNo").text();
+        var pageSize = $("[name=pageSize]").val();
+        var data = "pageNo="+pageNo+"&pageSize="+pageSize;
+        bindData(data);
+        $("[name=ju]").click(function () {
+            var pageNo = $("#pageNo").text();
+            var pageSize = $("[name=pageSize]").val();
+            var type = $(this).attr("id");
+            switch (type) {
+                case 'firstP':
+                    pageNo = 1;
+                    break;
+                case "preP":
+                    pageNo--;
+                    break;
+                case "nextP":
+                    pageNo++;
+                    break;
+                case "lastP":
+                    var pageCount = $("#pageCount").text();
+                    pageNo = pageSize;
+                    break;
+            }
+            var data = "pageNo="+pageNo+"&pageSize="+pageSize;
+            bindData(data);
+        });
+        $("#search").click(function () {
+            var searchStr = $("[name=title]").val();
+            var data = "str="+searchStr+"&pageNo=1&pageSize=4";
+            bindData(data);
+        });
+        $("table").on("click",".goLook",function(){
+                var id = $(this).attr("id");
+                window.location.href="http://localhost:8080/reply.html?id="+id;
+
+        });
+
+    });
+</script>
+</html>

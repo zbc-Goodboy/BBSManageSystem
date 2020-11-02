@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reply</title>
+</head>
+<style>
+    tr:nth-of-type(2){
+        text-align: right;
+        color: red;
+        font-size: 16px;
+    }
+    a{
+        color: red;
+        text-decoration: none;
+    }
+    a:active{
+        color: red;
+    }
+</style>
+<link type="text/css" rel="stylesheet" href="/css/basicCss.css">
+<body>
+<table border="1">
+    <tr class="title">
+        <td colspan="3">回复信息列表
+            <span id="checkBack"></span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3"><a id="add">添加回复</a>&nbsp;&nbsp;<a href="homep.html">返回帖子列表</a></td>
+    </tr>
+    <tr id="manager">
+        <td>回复内容</td>
+        <td>回复昵称</td>
+        <td>发布时间</td>
+    </tr>
+</table>
+<script src="js/jquery-1.8.3.js"></script>
+<script>
+    function bindData(data){
+        $("tr:gt(2)").remove();
+        $.ajax({
+            url:"getreplydetail",
+            data:data,
+            dataType:"json",
+            success: function (data) {
+                for(let i=0;i<data.length;i++){
+                    var tr = $("<tr></tr>");
+                    var content = $("<td>"+data[i].content+"</td>");
+                    var author = $("<td>"+data[i].author+"</td>");
+                    var createdate = $("<td>"+data[i].createdate+"</td>");
+                    tr.append(content).append(author).append(createdate);
+                    $("table").append(tr);
+                }
+            }
+        })
+    }
+    $(function () {
+        var query = window.location.search.substring(1);
+        var id = query.split("=")[1];
+        var data = "invid="+id;
+        bindData(data);
+        $("#add").click(function () {
+            window.location.href="addrelpy.html?id="+id;
+        })
+    });
+</script>
+</body>
+</html>

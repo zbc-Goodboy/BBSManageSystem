@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>add</title>
+</head>
+<style>
+    title{
+        font-weight: bold;
+        font-size: 18px;
+        background-color: aqua;
+    }
+    table{
+        width: 600px;
+        height: 200px;;
+        text-align: center;
+        border-color: #ccc;
+        margin: 50px auto;
+    }
+    tr:nth-of-type(1){
+        background-color: aqua;
+        height: 30px;
+    }
+    tr:nth-of-type(2){
+        height: 100px;
+    }
+    tr:nth-of-type(2),tr:nth-of-type(3) td{
+        text-align: left;
+    }
+    tr:nth-of-type(2),tr:nth-of-type(3) td:nth-of-type(1){
+        font-weight: bold;
+        text-align: left;
+    }
+    textarea{
+        width: 350px;
+        height: 99px;
+    }
+    input{
+        width:350px;
+    }
+</style>
+<body>
+    <div>
+        <table border="1">
+            <tr><td id="title" colspan="2">添加回复</td></tr>
+            <tr>
+                <td id="context">回复内容：</td>
+                <td><textarea></textarea></td>
+            </tr>
+            <tr>
+                <td>回复昵称：</td>
+                <td><input type="text" name="author"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button id="submit">提交</button>&nbsp;&nbsp;&nbsp;<button id="back">返回</button></td>
+            </tr>
+        </table>
+        <input type="hidden" name="id" value="">
+    </div>
+</body>
+<script src="js/jquery-1.8.3.js"></script>
+<script>
+    $(function () {
+        var query = window.location.search.substring(1);
+        var id = query.split("=")[1];
+        $("[name=id]").val(id);
+        $("#submit").click(function () {
+            alert(id);
+            var content = $("textarea").val();
+            if(content.trim()!=null&&content.trim()!=""){
+                var author = $("[name=author]").val();
+                if(author==null||author.trim()==""){
+                    author='匿名用户';
+                }
+                var invid = $("[name=id]").val();
+                window.location.href="addreply?content="+content+"&author="+author+"&invid="+id;
+            }else{
+                $("textarea").text("必填项");
+            }
+        })
+    })
+</script>
+</html>
